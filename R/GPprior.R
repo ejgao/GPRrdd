@@ -19,6 +19,7 @@ gp_prior = function(degree = 2, covariance, X, y, n){
   mean_function_treatment <- lm(Y ~ poly(X,degree))
   # first find the distance between every point in x, then take exponential of that
   # call covariance function for treatment
+  covariance_function(X,y, signa_hat, l)
   # allow user to specify the number of observations
   # GP Processes = multivariate normal over a finite set, hence use rmnorm
   #rmvnorm()
@@ -41,6 +42,7 @@ covariance_function = function(X, y, sigma_hat, l){
   # for now, allow users to pick sigma_hat, l, will optimize if time permits
   # compute distance between any two rows of X
   # randomize to obtain two rows of X
+  # this covariance function does not change for control and treatment groups.
   random_indices = sample(nrow(X), 2, replace = F)
   distance_matrix = X[random_indices, ]
   x1 = distance_matrix[1,]
