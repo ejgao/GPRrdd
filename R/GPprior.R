@@ -3,7 +3,7 @@
 #'
 #' @param X matrix input
 #' @param Y vector input
-#' @param b scalar input should be the row number user wants to remove
+#' @param b scalar input should be the row number user wants to remove(has to be greater than 2)
 #' @param degree scalar input, default is 0 if no argument given
 #' @param sigma_hat vector input
 #' @param choice scalar input 1 or 2, default is 1
@@ -15,6 +15,9 @@
 #' @export
 #'
 #' @examples
+#' X = matrix(rnorm(24), nrow = 4)
+#' y = c(1,2,3,4)
+#' gp_prior(X, y, b = 3, sigma_hat = 0.3, l = 2)
 gp_prior = function(X, Y, b, degree = 0, choice = 1, sigma_hat = NULL, l = NULL, alpha = NULL){
   # y is response, x is matrix of predictors
   # user can specify the degree here
@@ -44,16 +47,7 @@ gp_prior = function(X, Y, b, degree = 0, choice = 1, sigma_hat = NULL, l = NULL,
 }
 
 
-#' Title
-#'
-#' @param X
-#' @param sigma_hat
-#' @param l
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 squared_exponential_covfunction = function(X, sigma_hat, l){
   # for now, allow users to pick sigma_hat, l, will optimize if time permits
   # allow users to choose which function they want to pick

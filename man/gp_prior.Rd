@@ -4,21 +4,42 @@
 \alias{gp_prior}
 \title{GP Priors}
 \usage{
-gp_prior(degree = 2, X, y)
+gp_prior(
+  X,
+  Y,
+  b,
+  degree = 0,
+  choice = 1,
+  sigma_hat = NULL,
+  l = NULL,
+  alpha = NULL
+)
 }
 \arguments{
-\item{degree}{scalar input, default is 2 if no argument given}
-
 \item{X}{matrix input}
 
-\item{y}{vector input}
+\item{Y}{vector input}
+
+\item{b}{scalar input should be the row number user wants to remove(has to be greater than 2)}
+
+\item{degree}{scalar input, default is 0 if no argument given}
+
+\item{choice}{input}
+
+\item{sigma_hat}{vector input}
+
+\item{l}{vector input}
+
+\item{alpha}{vector input}
 }
 \value{
-multivariate normal distribution with given mean function and covariance function
+mean function and covariance function
 }
 \description{
 GP Priors
 }
 \examples{
-gp_prior(degree = 3, X, y)
+X = matrix(rnorm(24), nrow = 4)
+y = c(1,2,3,4)
+gp_prior(X, y, b = 3, sigma_hat = 0.3, l = 2)
 }
