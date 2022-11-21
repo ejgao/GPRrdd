@@ -21,17 +21,18 @@
 gp_prior = function(X, Y, b, degree = 0, choice = 1, sigma_hat = NULL, l = NULL, alpha = NULL){
   # y is response, x is matrix of predictors
   # user can specify the degree here
-  # first need to split the data by a boundary point/discontinuity point
+  # first need to split the?plo data by a boundary point/discontinuity point
   Xc = X[(1:b-1), ]
+  Yc = Y[1:b-1]
   if (degree == 0){
     mean_function_control = rep(0, ncol(Xc))
     mean_function_treatment = rep(0, ncol(Xc))
   }
   else{
     # mean function for control
-    mean_function_control <- lm(Y ~ poly(Xc,degree))$coefficients
+    mean_function_control <- lm(Yc ~ poly(x = Xc, degree = degree, raw = TRUE))$coefficients
     # mean function for treatment
-    mean_function_treatment <- lm(Y ~ poly(Xc,degree))$coefficients
+    mean_function_treatment <- lm(Yc ~ poly(x = Xc, degree = degree, raw = TRUE))$coefficients
   }
   # call covariance function for treatment
   # GP Processes = multivariate normal over a finite set, hence use rmnorm
