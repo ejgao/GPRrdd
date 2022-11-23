@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of GPRdd is to …
+## Intended Use
 
 ## Installation
 
