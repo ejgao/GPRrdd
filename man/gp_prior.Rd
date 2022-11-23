@@ -39,7 +39,7 @@ mean function and covariance function
 GP Priors
 }
 \examples{
-X = matrix(rnorm(24), nrow = 4)
-y = c(1,2,3,4)
+X <- matrix(rnorm(24), nrow = 4)
+y <- c(1, 2, 3, 4)
 gp_prior(X, y, b = 3, sigma_hat = 0.3, l = 2)
 }

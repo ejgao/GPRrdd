@@ -63,17 +63,6 @@ squared_exponential_covfunction <- function(X, sigma_hat, l) {
 }
 
 
-#' Title
-#'
-#' @param X
-#' @param alpha
-#' @param l
-#' @param sigma_hat
-#'
-#' @return
-#' @export
-#'
-#' @examples
 rational_quad_kernel <- function(X, alpha, l, sigma_hat) {
   n <- nrow(X)
   for (i in 1:n) {
@@ -98,6 +87,12 @@ gp_posterior <- function(X, Y, b) {
 
 
 ## inherit parameters, add reference
+#' Title
+#' @inheritParams gp_prior
+#' @return
+#'
+#' @export
+#' @examples
 create_plot <- function(b, X, Y) {
   # return plot
   # return gp prior plot
