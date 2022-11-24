@@ -36,5 +36,5 @@ library(GPRrdd)
 in order to gain access to the three functions that are available: gp_prior, gp_posterior, and create_plot.
 
 ## What is Left
-The actual coding portion of the package is nearly complete and I plan on finishing up create_plot and gp_posterior. I then plan on creating a vignette with examples. Furthermore, I also need to document some of my functions and also polish up all my functions. I know my functions work; however, I am not sure they work properly so I will be checking on that, 
+The actual coding portion of the package is nearly complete and I plan on finishing up create_plot and gp_posterior. I then plan on creating a vignette with examples. Regarding the functions for the package, they are almost all done. The functions gp_posterior and create_plot need some work. Furthermore, I also need to document some of my functions and also polish up all my functions. I know the functions that are complete work; however, I am not sure they work properly so I will be checking on that.
 

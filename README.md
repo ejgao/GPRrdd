@@ -1,7 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GPRdd
+# Gaussian Processes Regression on Regression Discontinuity Designs Package
+
+The following is a short description explaning the use of the package and how the package can be installed.
 
 <!-- badges: start -->
 <!-- badges: end -->
