@@ -4,12 +4,14 @@ Version: 1.0.0.9000
 Authors@R: 
     person("Eric", "Gao", , "eric2018@tamu.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: The main goal of regression discontinuity designs is to measure the treatment effect before and after a policy change.
-Here, we estimate the treatment effect using Gaussian Process regression(GPR), where we specify an initial prior on the mean response functions for both our control and treatment groups. 
-Then, the posterior is obtained for both the control and treatment groups and the treatment effect is the difference between the obtained posterior for the last row in the control and the first row in the treatment.
+Description: The main goal of regression discontinuity designs is to measure the treatment effect before and after a policy change.Here, we estimate the treatment effect using Gaussian Process regression(GPR), where we specify an initial prior on the mean response functions for both our control and treatment groups. Then, the posterior is obtained for both the control and treatment groups and the treatment effect is the difference between the obtained posterior for the last row in the control and the first row in the treatment.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Imports: 
     stats
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

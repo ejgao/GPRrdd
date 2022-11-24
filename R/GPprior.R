@@ -24,6 +24,7 @@ gp_prior <- function(X, Y, b, degree = 0, choice = 1, sigma_hat = NULL, l = NULL
   # first need to split the?plo data by a boundary point/discontinuity point
   Xc <- X[(1:b - 1), ]
   Yc <- Y[1:b - 1]
+  # may have to do regression on one column of X, not every column but need to check on this
   if (degree == 0) {
     mean_function_control <- rep(0, ncol(Xc))
     mean_function_treatment <- rep(0, ncol(Xc))
@@ -81,9 +82,10 @@ gp_posterior <- function(X, Y, b) {
   Xt <- X[(b + 1):nrow(n), ]
   n <- nrow(Xt)
   sigma_y <- var(Y) * diag(n)
+  # need to get posterior mean for both treatment and control
+  # need to get posterior variance for both treatment and control
 }
 
-# need a readMe
 
 
 ## inherit parameters, add reference
@@ -104,6 +106,8 @@ create_plot <- function(b, X, Y) {
   # call gp_prior, gp_posterior
   abline(v = X[b])
   prior <- gp_prior(X, Y, b, degree, choice, sigma_hat, alpha)
+  # plot fitted values on prior
+  # plot fitted values on posterior
   posterior <- gp
-  return(5)
+  # return plot
 }
