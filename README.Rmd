@@ -27,7 +27,10 @@ In a regression discontinuity design (RDD), we have a discontinuity point at a p
 You can install the development version of GPRdd from [GitHub](https://github.com/) with:
 
 ``` r
+# install without vignette
 devtools::install_github("ejgao/GPRrdd")
+# install with vignette
+devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
 ```
 Upon installing, please run 
 ```r

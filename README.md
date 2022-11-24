@@ -1,9 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Gaussian Processes Regression on Regression Discontinuity Designs Package
-
-The following is a short description explaning the use of the package and how the package can be installed.
+# GPRdd
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -31,7 +29,10 @@ You can install the development version of GPRdd from
 [GitHub](https://github.com/) with:
 
 ``` r
+# install without vignette
 devtools::install_github("ejgao/GPRrdd")
+# install with vignette
+devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
 ```
 
 Upon installing, please run
@@ -47,6 +48,9 @@ gp_prior, gp_posterior, and create_plot.
 
 The actual coding portion of the package is nearly complete and I plan
 on finishing up create_plot and gp_posterior. I then plan on creating a
-vignette with examples. Furthermore, I also need to document some of my
-functions and also polish up all my functions. I know my functions work;
-however, I am not sure they work properly so I will be checking on that,
+vignette with examples. Regarding the functions for the package, they
+are almost all done. The functions gp_posterior and create_plot need
+some work. Furthermore, I also need to document some of my functions and
+also polish up all my functions. I know the functions that are complete
+work; however, I am not sure they work properly so I will be checking on
+that.

@@ -1,0 +1,19 @@
+---
+title: "GPRdd Vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{This is the title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(GPRdd)
+```
