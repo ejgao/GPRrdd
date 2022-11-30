@@ -120,14 +120,14 @@ gp_posterior <- function(X, Y, b, sigma_hat, choice = 1, l = NULL, alpha = NULL)
     Kc <- rational_quad_kernel(Xc, alpha, l, sigma_hat)
     Kt <- rational_quad_kernel(Xt, alpha, l, sigma_hat)
   }
-  # need to get posterior mean for both treatment and control
-  #diff_t = Yt - mean_function(Xt, Yt, degree)
-  #diff_c = Yc - mean_function(Xc, Yc, degree)
-  #kernel_t = e + solve(Kt + sigma_y)
-  #kernel_c = KTc + solve(Kc + sigma_y)
-  # posterior mean is given by mean at the boundary + kernel*(y-mean)
-  #post_mean_c = 0 + "quatty" + kernel_t
-  #post_mean_treat = 0 + "quatty" + kernel_c
+  need to get posterior mean for both treatment and control
+  diff_t = Yt - mean_function(Xt, Yt, degree)
+  diff_c = Yc - mean_function(Xc, Yc, degree)
+  kernel_t = e + solve(Kt + sigma_y)
+  kernel_c = KTc + solve(Kc + sigma_y)
+  posterior mean is given by mean at the boundary + kernel*(y-mean)
+  post_mean_c = 0 + "quatty" + kernel_t
+  post_mean_treat = 0 + "quatty" + kernel_c
   # next get posterior variance
 
   # need to get posterior variance for both treatment and control
