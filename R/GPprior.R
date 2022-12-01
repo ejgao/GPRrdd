@@ -4,6 +4,7 @@
 #' @param X matrix input
 #' @param Y vector input
 #' @param b scalar input, should be the discontinuity point in the data
+#' @param col_num scalar input allowing user to select particular column of X
 #' @param degree scalar input, default is NULL if no argument given
 #' @param sigma_hat vector input
 #' @param choice scalar input 1 or 2, default is 1
@@ -17,14 +18,18 @@
 #' X <- matrix(rnorm(24), nrow = 4)
 #' y <- c(1, 2, 3, 4)
 #' gp_prior(X, y, b = 3, sigma_hat = 0.3, l = 2)
-gp_prior <- function(X, Y, b, degree = NULL, sigma_hat, choice = 1, l = NULL, alpha = NULL) {
+gp_prior <- function(X, Y, b, col_num, degree = NULL, sigma_hat, choice = 1, l = NULL, alpha = NULL) {
   # y is response, x is matrix of predictors
   # user can specify the degree here
-  # first need to split the?plo data by a boundary point/discontinuity point
+  # first need to split the data by a boundary point/discontinuity point
   # do we need to split by discontinuity point?
   # one dimensional, need to claim X up
-  Xc <- X[(1:b - 1), ]
-  Yc <- Y[1:b - 1]
+  X = X[, col_num]
+  split_point = which(X == b)
+  Xc <- X[1: which(X == split_point)[1]] # choose first instance data splits
+  Yc <- Y[1: which(X == split_point)[1]]
+  Xc <- X[which(X == split_point)[2]: length(X)]
+  Yt <- Y[which(X == split_point)[2]: length(X)]
   # may have to do regression on one column of X, not every column but need to check on this
   if (is.null(degree) == TRUE) {
     mean_function_control <- rep(0, length(Xc))
@@ -39,10 +44,10 @@ gp_prior <- function(X, Y, b, degree = NULL, sigma_hat, choice = 1, l = NULL, al
   # GP Processes = multivariate normal over a finite set, hence use rmnorm
   # choice of covariance kernel left to user
   if (choice == 1) {
-    K <- squared_exponential_covfunction(Xc, sigma_hat, l)
+    K <- squared_exponential_covfunction(X, sigma_hat, l)
   }
   if (choice == 2) {
-    K <- rational_quad_kernel(Xc, alpha, l, sigma_hat)
+    K <- rational_quad_kernel(X, alpha, l, sigma_hat)
   }
   # return means, K
   return(list(mean_control= mean_function_control, mean_treatment = mean_function_treatment, K = K))
