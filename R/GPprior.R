@@ -3,7 +3,7 @@
 #'
 #' @param X matrix input
 #' @param Y vector input
-#' @param b scalar input should be the row number user wants to remove(has to be greater than 2)
+#' @param b scalar input, should be the discontinuity point in the data
 #' @param degree scalar input, default is NULL if no argument given
 #' @param sigma_hat vector input
 #' @param choice scalar input 1 or 2, default is 1
