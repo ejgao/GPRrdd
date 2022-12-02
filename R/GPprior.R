@@ -31,17 +31,12 @@ gp_prior <- function(X, Y, b, col_num, sigma_hat, degree = NULL, choice = 1, l =
   Xt <- X[split_point[2]: length(X)]
   Yt <- Y[split_point[2]: length(X)]
   # may have to do regression on one column of X, not every column but need to check on this
-  if (is.null(degree) == TRUE) {
-    mean_function_control <- rep(0, length(Xc))
-    mean_function_treatment <- rep(0, length(Xt))
-  } else {
-    # mean function for control
-    mean_function_control <- mean_function(X, Y, degree)
-    # mean function for treatment
-    mean_function_treatment <- mean_function(X, Y, degree)
-  }
+  # call mean function for control
+  mean_function_control <- mean_function(Xc, Yc, degree)
+  # call mean function for treatment
+  mean_function_treatment <- mean_function(Xt, Yt, degree)
   # call covariance function for treatment
-  # GP Processes = multivariate normal over a finite set, hence use rmnorm
+  # GP Processes = multivariate normal over a finite set
   # choice of covariance kernel left to user
   if (choice == 1) {
     K <- squared_exponential_covfunction(X, sigma_hat, l)
@@ -54,8 +49,13 @@ gp_prior <- function(X, Y, b, col_num, sigma_hat, degree = NULL, choice = 1, l =
 }
 
 # mean function
-mean_function = function(X, Y, degree){
-  mean_func = lm(Y ~ poly(x, degree = degree, raw = TRUE))$coefficients
+mean_function = function(X, Y, degree = NULL){
+  if (is.null(degree) == FALSE){
+    mean_func = lm(Y ~ poly(x, degree = degree, raw = TRUE))$fitted.values
+  }
+  else{
+    mean_func = rep(0, length(X))
+  }
 }
 
 # squared exponential covariance kernel
@@ -77,8 +77,8 @@ squared_exponential_covfunction <- function(X, sigma_hat, l, b = NULL) {
     }
   }
   else{
-    K = matrix(0, 1, n)
-    K = sigma_hat * exp({ -(b - X)^2})/ (2 * l^2)
+    #K = matrix(0, 1, n)
+    K = as.matrix(sigma_hat * exp({ -(b - X)^2})/ (2 * l^2))
     #K <- matrix(0, 1, n)
     ## vectorize
 
@@ -95,6 +95,7 @@ squared_exponential_covfunction <- function(X, sigma_hat, l, b = NULL) {
 rational_quad_kernel <- function(X, alpha, l, sigma_hat, b = NULL) {
   n <- length(X)
   if (is.null(b) == TRUE){
+    K <- matrix(0, n, n)
     for (i in 1:n) {
       for (j in 1:n) {
         K[i, j] <- K[j, i] <- sigma_hat * (1 + (X[i] - X[j])^2 / (2 * alpha * l^2))^(-alpha)
@@ -103,8 +104,8 @@ rational_quad_kernel <- function(X, alpha, l, sigma_hat, b = NULL) {
   }
   else{
     ## vectorize
-    K = matrix(0, 1, n)
-    K = sigma_hat * (1 + (b - X)^2)/ ((2 * alpha * l^2)^(-alpha))
+    #K = matrix(0, 1, n)
+    K = as.matrix((sigma_hat) * (1 + ((b - X)^2 / ((2 * alpha * l^2))))^(-alpha))
     # K <- matrix(0, 1, n)
     # for(i in 1:n){
     #   K[i] = sigma_hat * (1 + (b[i] - X[i])^2 / (2 * alpha * l^2))^(-alpha)
@@ -132,7 +133,7 @@ rational_quad_kernel <- function(X, alpha, l, sigma_hat, b = NULL) {
 #' @export
 #'
 #' @examples
-gp_posterior <- function(X, Y, b, col_num, sigma_hat, degree = NULL, choice = 1, l = NULL, alpha = NULL) {
+gp_posterior <- function(X, Y, b, col_num, sigma_hat, choice = 1, l = NULL, alpha = NULL, degree = NULL) {
   # b is boundary point. it is a scalar, let b the row number you want to let be the boundary
   # mean function at b
   # Xt is stuff after the boundary
@@ -153,23 +154,23 @@ gp_posterior <- function(X, Y, b, col_num, sigma_hat, degree = NULL, choice = 1,
   else if (choice == 2) {
     Kc <- rational_quad_kernel(Xc, alpha, l, sigma_hat)
     Kt <- rational_quad_kernel(Xt, alpha, l, sigma_hat)
-    Kb_xc <- rational_quad_kernel(Xc, sigma_hat, l, b)
-    Kb_xt <- rational_quad_kernel(Xt, sigma_hat, l, b)
+    Kb_xc <- rational_quad_kernel(Xc, alpha, l, sigma_hat, b)
+    Kb_xt <- rational_quad_kernel(Xt, alpha, l, sigma_hat, b)
   }
   #need to get posterior mean for both treatment and control
-  #diff_t = Yt - mean_function(Xt, Yt, degree)
-  #diff_c = Yc - mean_function(Xc, Yc, degree)
-  diff_c = Yc
-  diff_t = Yt
-  kernel_c = Kb_xc %*% solve(Kc + var(y) * diag(length(Yc)))
-  kernel_t = Kb_xt %*% solve(Kt + var(y) * diag(length(Yt)))
+  diff_t = Yt - mean_function(Xt, Yt, degree)
+  diff_c = Yc - mean_function(Xc, Yc, degree)
+  #diff_c = Yc
+  #diff_t = Yt
+  kernel_c = t(Kb_xc) %*% solve(Kc + var(y) * diag(length(Yc)))
+  kernel_t = t(Kb_xt) %*% solve(Kt + var(y) * diag(length(Yt)))
   #posterior mean is given by mean at the boundary + kernel*(y-mean)
   # case when mean is 0 first
   post_mean_c = 0 + (kernel_c %*% diff_c)
   post_mean_t = 0 + (kernel_t %*% diff_t)
   # next get posterior variance
-  posterior_kc = kernel_c %*% t(Kb_xc)
-  posterior_kt = kernrel_t %*% t(Kb_xt)
+  posterior_kc = kernel_c %*% (Kb_xc)
+  posterior_kt = kernel_t %*% (Kb_xt)
   # need to get posterior variance for both treatment and control
   return(list(posterior_c_mean = post_mean_c, posterior_t_mean = post_mean_t, posterior_c_var = posterior_kc,
               posterior_t_var = posterior_kt))
@@ -190,25 +191,29 @@ gp_posterior <- function(X, Y, b, col_num, sigma_hat, degree = NULL, choice = 1,
 #' \emph{Journal of Statistical Planning and Inference}
 #' \strong{202} 14-30,
 #' \doi{10.1016/j.jspi.2019.01.003}
-create_plot <- function(X, Y, b, degree, choice, sigma_hat, alpha) {
+create_plot <- function(X, Y, b, col_num, degree, choice, sigma_hat, alpha) {
   # return plot
   # return gp prior plot
   # create prior plot with boundary removed
-  Xc <- X[1:(b - 1)]
-  Xt <- X[(b + 1):nrow(n)]
-  Yc <- Y[1:b - 1]
-  Yt <- Y[(b + 1):nrow(n)]
+  X = X[, col_num]
+  split_point = which(X == b)
+  Xc <- X[1: split_point[1]] # choose first instance data splits
+  Yc <- Y[1: split_point[1]]
+  Xt <- X[split_point[2]: length(X)]
+  Yt <- Y[split_point[2]: length(X)]
   # call gp_prior, gp_posterior
-  prior <- gp_prior(X, Y, b, degree, choice, sigma_hat, alpha)
+  #prior <- gp_prior(X, Y, b, degree, choice, sigma_hat, alpha)
   # plot fitted values on prior
   # plot fitted values on posterior
-  posterior <- gp_posterior(X, Y, b, choice, sigma_hat, alpha)
+  #posterior <- gp_posterior(X, Y, b, choice, sigma_hat, alpha)
   # plot
   # return plot
-  prior_mean = prior$mean
-  post_mean = posterior
+  #prior_mean = prior$mean
+  #post_mean = posterior
   # plot posterior mean
   plot(c(Xc, Xt), c(Yc, Yt))
   abline(v = b)
+  #lines(Xc, col = "red")
+  #lines(Xt, col = "blue")
 
 }
