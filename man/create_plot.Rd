@@ -4,15 +4,30 @@
 \alias{create_plot}
 \title{Title}
 \usage{
-create_plot(b, X, Y)
+create_plot(X, Y, b, degree, choice, sigma_hat, alpha)
 }
 \arguments{
-\item{b}{scalar input should be the row number user wants to remove(has to be greater than 2)}
-
 \item{X}{matrix input}
 
 \item{Y}{vector input}
+
+\item{b}{scalar input, should be the discontinuity point in the data}
+
+\item{degree}{scalar input, default is NULL if no argument given}
+
+\item{choice}{scalar input 1 or 2, default is 1}
+
+\item{sigma_hat}{vector input}
+
+\item{alpha}{vector input}
 }
 \description{
 Title
+}
+\references{
+Branson et al. (2019) A nonparametric Bayesian methodology
+for regression discontinuity designs,
+\emph{Journal of Statistical Planning and Inference}
+\strong{202} 14-30,
+\doi{10.1016/j.jspi.2019.01.003}
 }

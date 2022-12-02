@@ -8,9 +8,10 @@ gp_prior(
   X,
   Y,
   b,
-  degree = 0,
+  col_num,
+  sigma_hat,
+  degree = NULL,
   choice = 1,
-  sigma_hat = NULL,
   l = NULL,
   alpha = NULL
 )
@@ -20,15 +21,17 @@ gp_prior(
 
 \item{Y}{vector input}
 
-\item{b}{scalar input should be the row number user wants to remove(has to be greater than 2)}
+\item{b}{scalar input, should be the discontinuity point in the data}
 
-\item{degree}{scalar input, default is 0 if no argument given}
-
-\item{choice}{input}
+\item{col_num}{scalar input allowing user to select particular column of X}
 
 \item{sigma_hat}{vector input}
 
-\item{l}{vector input}
+\item{degree}{scalar input, default is NULL if no argument given}
+
+\item{choice}{scalar input 1 or 2, default is 1}
+
+\item{l}{scalar input}
 
 \item{alpha}{vector input}
 }
