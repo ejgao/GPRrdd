@@ -15,22 +15,7 @@
 #' @export
 #'
 #' @examples
-#' X <- matrix(rnorm(24), nrow = 4)
-#' y <- c(1, 2, 3, 4)
-#' gp_prior(X, y, b = 3, sigma_hat = 0.3, l = 2)
-gp_prior <- function(X, Y, b, col_num, sigma_hat, degree = NULL, choice = 1, l = NULL, alpha = NULL) {
-  # y is response, x is matrix of predictors
-  # user can specify the degree here
-  # first need to split the data by a boundary point/discontinuity point
-  # do we need to split by discontinuity point?
-  # one dimensional, need to claim X up
-  X = X[, col_num]
-  split_point = which(X == b)
-  Xc <- X[1: split_point[1]] # choose first instance data splits
-  Yc <- Y[1: split_point[1]]
-  Xt <- X[split_point[2]: length(X)]
-  Yt <- Y[split_point[2]: length(X)]
-  # may have to do regression on one column of X, not every column but need to check on this
+gp_prior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha = NULL, degree = NULL) {
   # call mean function for control
   mean_function_control <- mean_function(Xc, Yc, degree)
   # call mean function for treatment
@@ -38,14 +23,19 @@ gp_prior <- function(X, Y, b, col_num, sigma_hat, degree = NULL, choice = 1, l =
   # call covariance function for treatment
   # GP Processes = multivariate normal over a finite set
   # choice of covariance kernel left to user
+  # 1 or 2 indicates the choice
   if (choice == 1) {
-    K <- squared_exponential_covfunction(X, sigma_hat, l)
+    Kc <- squared_exponential_covfunction(Xc, sigma_hat, l)
+    Kt <- squared_exponential_covfunction(Xt, sigma_hat, l)
+
   }
   if (choice == 2) {
-    K <- rational_quad_kernel(X, sigma_hat, l, alpha)
+    Kc <- rational_quad_kernel(Xc, sigma_hat, l, alpha)
+    Kt <- rational_quad_kernel(Xt, sigma_hat, l, alpha)
+
   }
   # return means, K
-  return(list(mean_control= mean_function_control, mean_treatment = mean_function_treatment, K = K))
+  return(list(mean_control= mean_function_control, mean_treatment = mean_function_treatment, cov_c = Kc, cov_t = Kt))
 }
 
 # mean function
@@ -76,17 +66,11 @@ squared_exponential_covfunction <- function(X, sigma_hat, l, b = NULL) {
       }
     }
   }
-  else{
-    #K = matrix(0, 1, n)
-    K = as.matrix(sigma_hat * exp({ -(b - X)^2})/ (2 * l^2))
-    #K <- matrix(0, 1, n)
-    ## vectorize
-
-    # for(i in 1:n){
-    #   K[i] = sigma_hat * exp({ -(b - x[i])^2}) / (2*l^2)
-    # }
-  }
   # if b is supplied, find kernel between b and X
+  else{
+    # vectorize
+    K = as.matrix(sigma_hat * exp({ -(b - X)^2})/ (2 * l^2))
+  }
   return(K)
 }
 
@@ -104,76 +88,70 @@ rational_quad_kernel <- function(X, alpha, l, sigma_hat, b = NULL) {
   }
   else{
     ## vectorize
-    #K = matrix(0, 1, n)
+    # if b is supplied, find kernel between b and X(1 by n)
+    # cov between X and b is n by 1
     K = as.matrix((sigma_hat) * (1 + ((b - X)^2 / ((2 * alpha * l^2))))^(-alpha))
-    # K <- matrix(0, 1, n)
-    # for(i in 1:n){
-    #   K[i] = sigma_hat * (1 + (b[i] - X[i])^2 / (2 * alpha * l^2))^(-alpha)
-    # }
   }
-  # if b is supplied, find kernel between b and X(1 by n)
-  # cov between X and b is n by 1
   return(K)
 }
 
 
 # gp_posterior
 #' Title
-#'
-#' @param X
-#' @param Y
-#' @param b
-#' @param col_num
-#' @param sigma_hat
-#' @param choice
-#' @param l
-#' @param alpha
+#' @inheritParams gp_prior
 #'
 #' @return
 #' @export
 #'
 #' @examples
-gp_posterior <- function(X, Y, b, col_num, sigma_hat, choice = 1, l = NULL, alpha = NULL, degree = NULL) {
-  # b is boundary point. it is a scalar, let b the row number you want to let be the boundary
+gp_posterior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha = NULL, degree = NULL) {
   # mean function at b
-  # Xt is stuff after the boundary
-  X = X[, col_num]
-  split_point = which(X == b)
-  Xc <- X[1: split_point[1]] # choose first instance data splits
-  Yc <- Y[1: split_point[1]]
-  Xt <- X[split_point[2]: length(X)]
-  Yt <- Y[split_point[2]: length(X)]
-  #n <- nrow(Xt)
-  # sigma_y <- var(Y) * diag(n)
+  # store Kb_xc, Kb_xt as vectors
+  post_mean_c = rep(NA, length(Xc))
+  post_mean_t = rep(NA, length(Xt))
+  var_c = rep(NA, length(Xc))
+  var_t = rep(NA, length(Xt))
+  ##########################
+  # y - mean of x for both control and treatment groups
+  diff_t = Yt - mean_function(Xt, Yt, degree)
+  diff_c = Yc - mean_function(Xc, Yc, degree)
+  # two choices for cov kernel
+  # denote var of y as var(c(Yc, Yt))
   if (choice == 1) {
     Kc <- squared_exponential_covfunction(Xc, sigma_hat, l)
     Kt <- squared_exponential_covfunction(Xt, sigma_hat, l)
-    Kb_xc <- squared_exponential_covfunction(Xc, sigma_hat, l, b)
-    Kb_xt <- squared_exponential_covfunction(Xt, sigma_hat, l, b)
+    kernel_c = solve(Kc + var(c(Yc, Yt)) * diag(length(Yc)))
+    kernel_t = solve(Kt + var(c(Yc, Yt)) * diag(length(Yt)))
+    # looping around all the control groups
+    for(i in 1:length(Xc)){
+      post_mean_c[i] <- t(squared_exponential_covfunction(Xc, sigma_hat, l, Xc[i])) %*% kernel_c %*% diff_c
+      var_c[i] <- t(squared_exponential_covfunction(Xt, sigma_hat, l, Xc[i])) %*% kernel_c %*% squared_exponential_covfunction(Xt, sigma_hat, l, Xc[i])
+    }
+    # looping around all the treatment groups
+    for(i in 1:length(Xt)){
+      post_mean_t[i] <- t(squared_exponential_covfunction(Xt, sigma_hat, l, Xt[i])) %*% kernel_t %*% diff_t
+      var_t[i] <- t(squared_exponential_covfunction(Xt, sigma_hat, l, Xt[i])) %*% kernel_t %*% squared_exponential_covfunction(Xt, sigma_hat, l, Xt[i])
+      }
   }
   else if (choice == 2) {
     Kc <- rational_quad_kernel(Xc, alpha, l, sigma_hat)
     Kt <- rational_quad_kernel(Xt, alpha, l, sigma_hat)
-    Kb_xc <- rational_quad_kernel(Xc, alpha, l, sigma_hat, b)
-    Kb_xt <- rational_quad_kernel(Xt, alpha, l, sigma_hat, b)
+    kernel_c = solve(Kc + var(c(Yc, Yt)) * diag(length(Yc)))
+    kernel_t = solve(Kt + var(c(Yc, Yt)) * diag(length(Yt)))
+    # looping around all the control groups
+    for(i in 1:length(Xc)){
+      post_mean_c[i] <- t(rational_quad_kernel(Xc, alpha, l, sigma_hat, Xc[i])) %*% kernel_c %*% diff_c
+      var_c[i] = t(rational_quad_kernel(Xc, alpha, l, sigma_hat, Xc[i])) %*% kernel_c %*% rational_quad_kernel(Xc, alpha, l, sigma_hat, Xc[i])
+
+    }
+    # looping around all the treatment groups
+    for(i in 1:length(Xt)){
+      post_mean_t[i] <- t(rational_quad_kernel(Xt, alpha, l, sigma_hat, Xt[i])) %*% kernel_t %*% diff_t
+      var_t[i] = t(rational_quad_kernel(Xt, alpha, l, sigma_hat, Xt[i])) %*% kernel_t %*% rational_quad_kernel(Xt, alpha, l, sigma_hat, Xt[i])
+    }
   }
-  #need to get posterior mean for both treatment and control
-  diff_t = Yt - mean_function(Xt, Yt, degree)
-  diff_c = Yc - mean_function(Xc, Yc, degree)
-  #diff_c = Yc
-  #diff_t = Yt
-  kernel_c = t(Kb_xc) %*% solve(Kc + var(y) * diag(length(Yc)))
-  kernel_t = t(Kb_xt) %*% solve(Kt + var(y) * diag(length(Yt)))
-  #posterior mean is given by mean at the boundary + kernel*(y-mean)
-  # case when mean is 0 first
-  post_mean_c = 0 + (kernel_c %*% diff_c)
-  post_mean_t = 0 + (kernel_t %*% diff_t)
-  # next get posterior variance
-  posterior_kc = kernel_c %*% (Kb_xc)
-  posterior_kt = kernel_t %*% (Kb_xt)
-  # need to get posterior variance for both treatment and control
-  return(list(posterior_c_mean = post_mean_c, posterior_t_mean = post_mean_t, posterior_c_var = posterior_kc,
-              posterior_t_var = posterior_kt))
+  return(list(posterior_c_mean = post_mean_c, posterior_t_mean = post_mean_t, posterior_c_var = var_c,
+              posterior_t_var = var_t))
 }
 
 
@@ -191,29 +169,64 @@ gp_posterior <- function(X, Y, b, col_num, sigma_hat, choice = 1, l = NULL, alph
 #' \emph{Journal of Statistical Planning and Inference}
 #' \strong{202} 14-30,
 #' \doi{10.1016/j.jspi.2019.01.003}
-create_plot <- function(X, Y, b, col_num, degree, choice, sigma_hat, alpha) {
+create_plot <- function(X, Y, b, col_num, sigma_gp, sigma_hat, choice = 1, l = NULL, alpha = NULL, degree = NULL) {
   # return plot
   # return gp prior plot
   # create prior plot with boundary removed
   X = X[, col_num]
+  # split at discontinuity point
   split_point = which(X == b)
-  Xc <- X[1: split_point[1]] # choose first instance data splits
+  # choose first instance where there is a data split
+  Xc <- X[1: split_point[1]]
   Yc <- Y[1: split_point[1]]
+  # split y also
   Xt <- X[split_point[2]: length(X)]
   Yt <- Y[split_point[2]: length(X)]
   # call gp_prior, gp_posterior
-  #prior <- gp_prior(X, Y, b, degree, choice, sigma_hat, alpha)
+  prior <- gp_prior(Xc, Xt, Yc, Yt, sigma_hat, choice, l, alpha, degree)
   # plot fitted values on prior
   # plot fitted values on posterior
-  #posterior <- gp_posterior(X, Y, b, choice, sigma_hat, alpha)
-  # plot
-  # return plot
-  #prior_mean = prior$mean
-  #post_mean = posterior
-  # plot posterior mean
-  plot(c(Xc, Xt), c(Yc, Yt))
+  posterior <- gp_posterior(Xc, Xt, Yc, Yt, sigma_hat, choice, l, alpha, degree)
+  # obtain posterior means
+  post_mean_c = posterior$posterior_c_mean
+  post_mean_t = posterior$posterior_t_mean
+  # obtain posterior covariances
+  # need sigma_gp
+  sigma_var_c = posterior$posterior_c_var
+  sigma_var_t = posterior$posterior_t_var
+  # ideally, would compute sigma_gp through MLE
+  # However, if we let user choose, we have to ensure that the difference between sigma_gp and posterior sigma is at least 0
+  if(sigma_gp < max(sigma_var_c) | sigma_gp < max(sigma_var_t)){
+    sigma_gp = max(max(sigma_var_c), max(sigma_var_t))
+  }
+  posterior_var_c = sigma_gp - sigma_var_c
+  posterior_var_t = sigma_gp - sigma_var_t
+  # plot original data
+  plot(c(Xc, Xt), c(Yc, Yt), main = "RDD Plot", xlab = "x", ylab = "y")
+  # graph discontinuity point by using vertical line through that point
   abline(v = b)
-  #lines(Xc, col = "red")
-  #lines(Xt, col = "blue")
+  # graph the fit
+  lines(Xc, post_mean_c, col = "red")
+  lines(Xt, post_mean_t, col = "blue")
+  # plot 95% confidence bands
+  # confidence bands for control groups
+  lower_c = post_mean_c - (qt(0.95, length(Xc) - 1) * posterior_var_c)/(sqrt(length(Xc)))
+  upper_c = post_mean_c + (qt(0.95, length(Xc) - 1) * posterior_var_c)/sqrt(length(Xc))
+  # confidence bands for treatment groups
+  lower_t = post_mean_t - (qt(0.95, length(Xt) - 1) * posterior_var_t)/sqrt(length(Xt))
+  upper_t = post_mean_t + (qt(0.95, length(Xt) - 1) * posterior_var_t)/sqrt(length(Xt))
+  # graphing bounds for Xc
+  lines(Xc, lower_c, col = "red", lty = 5)
+  lines(Xc, upper_c, col = "red", lty = 5)
+  #graphing bounds for Xt
+  lines(Xt, lower_t, col = "blue", lty = 5)
+  lines(Xt, upper_t, col = "blue", lty = 5)
+  # add a legend to differentiate between every line
+  # legend("topright",inset = c(-.2, 0.2), legend = c("Fit", "95% CI", "Fit", "95% CI"), col = c("red", "red", "blue", "blue"),
+  #        lty = c(1,5,1,5))
+  # find treatment effect(scalar)
+  post_treatment_effect = post_mean_t[1] - post_mean_c[length(Xc)]
+  # return treatment effect(scalar)
+  return(post_treatment_effect)
 
 }
