@@ -5,44 +5,53 @@
 \title{GP Priors}
 \usage{
 gp_prior(
-  X,
-  Y,
-  b,
-  col_num,
+  Xc,
+  Xt,
+  Yc,
+  Yt,
   sigma_hat,
-  degree = NULL,
   choice = 1,
   l = NULL,
-  alpha = NULL
+  alpha = NULL,
+  degree = NULL
 )
 }
 \arguments{
-\item{X}{matrix input}
+\item{Xc}{vector input for the control group}
 
-\item{Y}{vector input}
+\item{Xt}{vector input for the test group}
 
-\item{b}{scalar input, should be the discontinuity point in the data}
+\item{Yc}{vector input for the response of the control group}
 
-\item{col_num}{scalar input allowing user to select particular column of X}
+\item{Yt}{vector input for the response of the test group}
 
-\item{sigma_hat}{vector input}
+\item{sigma_hat}{scalar input for covariance kernels}
+
+\item{choice}{scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel}
+
+\item{l}{scalar input for covariance kernel}
+
+\item{alpha}{scalar input for rational quadratic kernel}
 
 \item{degree}{scalar input, default is NULL if no argument given}
-
-\item{choice}{scalar input 1 or 2, default is 1}
-
-\item{l}{scalar input}
-
-\item{alpha}{vector input}
 }
 \value{
-mean function and covariance function
+A list with the elements
+\item{mean_control}{A n x r score matrix for the SLIDE model.}
+\item{mean_treatment}{A p x r loading matrix for the SLIDE model
+with sparsity pattern according to S.}
+\item{cov_c}{Tolerance value at convergence.}
+\item{cov_t}{}
 }
 \description{
 GP Priors
 }
 \examples{
-X <- matrix(rnorm(24), nrow = 4)
-y <- c(1, 2, 3, 4)
-gp_prior(X, y, b = 3, sigma_hat = 0.3, l = 2)
+set.seed(100)
+xc = seq(0, 1, length.out = 100)
+xt = seq(1, 2, length.out = 100)
+yc = 1 * xc + rnorm(100, 0, 0.25)
+yt = 2 + 1*xt + rnorm(100, 0, 0.25)
+gp_prior(xc, xt, yc, yt, sigma_hat = 1.2, choice = 1, l = 0.7)
+gp_prior(xc, xt, yc, yt, sigma_hat = 1.2, choice = 2, l = 0.8, alpha = 2)
 }

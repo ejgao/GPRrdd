@@ -2,23 +2,55 @@
 % Please edit documentation in R/GPprior.R
 \name{gp_posterior}
 \alias{gp_posterior}
-\title{Title}
+\title{Title GP Posterior}
 \usage{
 gp_posterior(
-  X,
-  Y,
-  b,
-  col_num,
+  Xc,
+  Xt,
+  Yc,
+  Yt,
   sigma_hat,
-  degree = NULL,
   choice = 1,
   l = NULL,
-  alpha = NULL
+  alpha = NULL,
+  degree = NULL
 )
 }
 \arguments{
-\item{alpha}{}
+\item{Xc}{vector input for the control group}
+
+\item{Xt}{vector input for the test group}
+
+\item{Yc}{vector input for the response of the control group}
+
+\item{Yt}{vector input for the response of the test group}
+
+\item{sigma_hat}{scalar input for covariance kernels}
+
+\item{choice}{scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel}
+
+\item{l}{scalar input for covariance kernel}
+
+\item{alpha}{scalar input for rational quadratic kernel}
+
+\item{degree}{scalar input, default is NULL if no argument given}
+}
+\value{
+A list with the elements
+\item{posterior_c_mean}{A n x r score matrix for the SLIDE model.}
+\item{posterior_t_mean}{A p x r loading matrix for the SLIDE model
+with sparsity pattern according to S.}
+\item{posterior_c_var}{Tolerance value at convergence.}
+\item{posterior_t_var}{}
 }
 \description{
-Title
+Title GP Posterior
+}
+\examples{
+set.seed(100)
+xc = seq(0, 1, length.out = 100)
+xt = seq(1, 2, length.out = 100)
+yc = 1 * xc + rnorm(100, 0, 0.25)
+yt = 2 + 1*xt + rnorm(100, 0, 0.25)
+gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1.2, choice = 1, l = 0.7)
 }

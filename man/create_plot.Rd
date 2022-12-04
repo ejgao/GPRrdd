@@ -2,27 +2,58 @@
 % Please edit documentation in R/GPprior.R
 \name{create_plot}
 \alias{create_plot}
-\title{Title}
+\title{Creating RDD Plot}
 \usage{
-create_plot(X, Y, b, degree, choice, sigma_hat, alpha)
+create_plot(
+  X,
+  Y,
+  b,
+  col_num,
+  sigma_gp,
+  sigma_hat,
+  choice = 1,
+  l = NULL,
+  alpha = NULL,
+  degree = NULL
+)
 }
 \arguments{
 \item{X}{matrix input}
 
-\item{Y}{vector input}
+\item{Y}{matrix input}
 
-\item{b}{scalar input, should be the discontinuity point in the data}
+\item{b}{discontinuity point}
+
+\item{col_num}{column of X that the user wants in order to do regression discontinuty design on}
+
+\item{sigma_gp}{scalar input--indicates the variance of the Gaussian Process model}
+
+\item{sigma_hat}{scalar input for covariance kernels}
+
+\item{choice}{scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel}
+
+\item{l}{scalar input for covariance kernel}
+
+\item{alpha}{scalar input for rational quadratic kernel}
 
 \item{degree}{scalar input, default is NULL if no argument given}
-
-\item{choice}{scalar input 1 or 2, default is 1}
-
-\item{sigma_hat}{vector input}
-
-\item{alpha}{vector input}
+}
+\value{
+RDD Plot as well as estimated treatment effect
 }
 \description{
-Title
+Creating RDD Plot
+}
+\examples{
+set.seed(100)
+sc = seq(0, 1, length.out = 100)
+st = seq(1, 2, length.out = 100)
+yc = 1 * sc + rnorm(100, 0, 0.25)
+yt = 2 + 1*st + rnorm(100, 0, 0.25)
+x = c(sc, st)
+x = as.matrix(x)
+y = c(yc, yt)
+create_plot(X=x, Y=y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
 }
 \references{
 Branson et al. (2019) A nonparametric Bayesian methodology
