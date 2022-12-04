@@ -2,7 +2,7 @@
 title: "GPRdd Vignette"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{This is the title}
+  %\VignetteIndexEntry{GPRdd Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,10 +10,138 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=8, fig.height=8
 )
 ```
 
-```{r setup}
+
+##### Introduction #####
+The idea of a regression discontinuity is the measurement of the treatment effect. 
+GPRdd is a package that is adopted from the paper "A Nonparametric Bayesian Methodology for
+Regression Discontinuity Designs" [Branson et al., 2019]. The idea is to employ Gaussian process regression (GPR) to find an initial prior on the mean response functions for both our control and treatment groups. Afterwards, the treatment effect can be estimated. 
+
+Ideally, this package is used when user knows that there is a discontinuity in the data. As a real life example, supposed we wanted to measure GDP before and after a certain government policy. In this case x would be time and y would be GDP. So, at the time the policy has occurred, there would be a discontinuity, since the GDP before and after would be different. So, we can utilize this package in order to measure the treatment effect. 
+
+##### Quick Start #####
+
+First, we have to install the package. In order to do so, the following command will work
+```{r, eval = F}
+devtools::install_github("ejgao/GPRrdd")
+```
+
+Next, upon installing, the following command will give user access to all three functions inside of GPRdd: gp_prior, gp_posterior, and create_plot.
+```{r}
 library(GPRdd)
 ```
+
+### GP Prior ###
+First, gp_prior is a function that returns the prior mean function and prior covariance kernel of the data. Our estimates, given as $\hat{\mu_{t}}(x)$ and$\hat{\mu_{c}}(x)$, are both Gaussian processes with a certain prior mean function and prior covariance kernel. The mean function taken here is either 0 or of the form $\beta_0 + \beta_1x + \beta1_1x^2 + ...$. This function returns the desired mean function and prior covariance kernel. It is not the most interesting function; however, the create_plot function and gp_posterior relies on this.
+
+Small example: 
+
+```{r}
+set.seed(100)
+sc = seq(1, 0, length.out = 4)
+st = seq(0, -1, length.out = 4)
+yc = -1 * sc + rnorm(4, 0, 0.25)
+yt = -2 + 1*st + rnorm(4, 0, 0.25)
+gp_prior(sc, st, yc, yt, sigma_hat = 1, choice = 1, l = 0.3)
+```
+
+Here, since we chose choice = 1, we obtain the estimates using a squared exponential covariance kernel. However, the user has two choices for the covariance kernel, the other being the rational quadratic kernel. A description for them can be seen [here](https://www.cs.toronto.edu/~duvenaud/cookbook/).
+
+### GP Posterior ###
+We also have gp_posterior, which has similar functionality as gp_prior, except that this functions returns the posterior means and posterior covariance kernel. Now, the estimates are in terms of b, and are given on page 11 of [Branson et al., 2019].
+
+Now, an illustration of the function in progress is shown below:
+```{r}
+set.seed(100)
+sc = seq(1, 0, length.out = 10)
+st = seq(0, -1, length.out = 10)
+yc = -1 * sc + rnorm(10, 0, 0.25)
+yt = -2 + 1*st + rnorm(10, 0, 0.25)
+gp_posterior(sc, st, yc, yt, sigma_hat = 1, choice = 1, l = 0.3)
+```
+
+
+
+##### Create RDD Plot #####
+The last function within the library that is available to the user is the create_plot function. This function does three things: 
+1) It graphs the discontinuity point, which is denoted as X = b, where b is provided by the user
+2) Furthermore, this function plots the original data, defined as y for response and x for explanatory.
+3) The posterior fits for both the control group and treatment group are plotted with their respective confidence intervals, and the treatment effect, defined as $\hat{\tau}$ =  $\hat{\mu_{t}}(b)$ − $\hat{\mu_{c}}(b)$. 
+
+
+To illustrate this more in depth, we generate some data: 
+
+```{r}
+set.seed(10345)
+sc = seq(0, 2, length.out = 200)
+st = seq(2, 4, length.out = 200)
+yc = 1 * sc + rnorm(100, 0, 0.25)
+yt = 2 + 1*st + rnorm(100, 0, 0.25)
+x = c(sc, st)
+x = as.matrix(x)
+y = c(yc, yt)
+```
+
+
+Next, we can plot and get the estimated treatment effect. The estimated treatment effect is exactly the $\tau$ as described above.
+```{r}
+treatment = create_plot(X=x, Y=y, b = 2, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
+treatment
+```
+
+
+Furthermore, if we wanted to instead use the rational quadratic kernel, we can also estimate our fit and treatment effects using the exact command, except we will now use "choice = 2". we also need to specify our choice for alpha.
+
+```{r}
+treatment = create_plot(X=x, Y=y, b = 2, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 2, l = 0.7, alpha = 0.3)
+treatment
+```
+
+However, since the user has control over the function parameters and their values, great care must be taken in selecting the values for sigma_hat, l, and alpha. Values too large or too small will lead to bad fits. Their ideal values can be found through using MLE. 
+
+We can create a plot also when the control group is increasing with respect to Y and the treatment group is decreasing with respect to Y. Again, we first generate the data.
+
+```{r}
+set.seed(100)
+sc = seq(1, 0, length.out = 200)
+st = seq(0, -1, length.out = 200)
+yc = -1 * sc + rnorm(100, 0, 0.25)
+yt = -2 + 1*st + rnorm(100, 0, 0.25)
+x = c(sc, st)
+x = as.matrix(x)
+y = c(yc, yt)
+```
+
+We can then run create_plot and the results are below.
+
+```{r}
+treatment = create_plot(X = x, Y = y, b = 0, col_num = 1, sigma_gp = 2, l = 0.7, sigma_hat = 1.3)
+treatment
+```
+
+In the examples above, we have chosen the mean function priors to be 0. However, they don't necessarily have to be. One possible choice for the mean function that is coded into the functions is given as: 
+$\beta_0 + \beta_1x + \beta1_1x^2 + ...$. In the function, we can simply let the user select the desired degree like so:
+
+```{r}
+set.seed(10345)
+sc = seq(0, 2, length.out = 200)
+st = seq(2, 4, length.out = 200)
+yc = 1 * sc + rnorm(100, 0, 0.25)
+yt = 2 + 1*st + rnorm(100, 0, 0.25)
+x = c(sc, st)
+x = as.matrix(x)
+y = c(yc, yt)
+treatment = create_plot(X=x, Y=y, b = 2, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7, degree = 1)
+treatment
+```
+
+Compared to the first graph, for our generated data, we have similar results for degree = 1.
+
+
+##### References #####
+Branson et al., 2019] Branson, Z., Rischard, M., Bornn, L., & Miratrix, W, L (2019). A nonparametric Bayesian methodology for regression discontinuity designs. Journal of Statistical Planning and Inference, 202, 14-30. https://doi.org/10.1016%2Fj.jspi.2019.01.003
+
