@@ -1,20 +1,32 @@
 
 #' GP Priors
 #'
-#' @param X matrix input
-#' @param Y vector input
-#' @param b scalar input, should be the discontinuity point in the data
-#' @param col_num scalar input allowing user to select particular column of X
-#' @param sigma_hat vector input
+#' @param Xc vector input for the control group
+#' @param Xt vector input for the test group
+#' @param Yc vector input for the response of the control group
+#' @param Yt vector input for the response of the test group
+#' @param sigma_hat scalar input for covariance kernels
+#' @param choice scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel
+#' @param l scalar input for covariance kernel
+#' @param alpha scalar input for rational quadratic kernel
 #' @param degree scalar input, default is NULL if no argument given
-#' @param choice scalar input 1 or 2, default is 1
-#' @param l scalar input
-#' @param alpha vector input
 #'
-#' @return mean function and covariance function
+#' @return A list with the elements
+#' \item{mean_control}{A n x r score matrix for the SLIDE model.}
+#' \item{mean_treatment}{A p x r loading matrix for the SLIDE model
+#' with sparsity pattern according to S.}
+#' \item{cov_c}{Tolerance value at convergence.}
+#' \item{cov_t}{}
 #' @export
 #'
 #' @examples
+#' set.seed(100)
+#' xc = seq(0, 1, length.out = 100)
+#' xt = seq(1, 2, length.out = 100)
+#' yc = 1 * xc + rnorm(100, 0, 0.25)
+#' yt = 2 + 1*xt + rnorm(100, 0, 0.25)
+#' gp_prior(xc, xt, yc, yt, sigma_hat = 1.2, choice = 1, l = 0.7)
+#' gp_prior(xc, xt, yc, yt, sigma_hat = 1.2, choice = 2, l = 0.8, alpha = 2)
 gp_prior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha = NULL, degree = NULL) {
   # call mean function for control
   mean_function_control <- mean_function(Xc, Yc, degree)
@@ -41,7 +53,7 @@ gp_prior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha = NU
 # mean function
 mean_function = function(X, Y, degree = NULL){
   if (is.null(degree) == FALSE){
-    mean_func = lm(Y ~ poly(x, degree = degree, raw = TRUE))$fitted.values
+    mean_func = lm(Y ~ poly(X, degree = degree, raw = TRUE))$fitted.values
   }
   else{
     mean_func = rep(0, length(X))
@@ -97,13 +109,24 @@ rational_quad_kernel <- function(X, alpha, l, sigma_hat, b = NULL) {
 
 
 # gp_posterior
-#' Title
+#' Title GP Posterior
 #' @inheritParams gp_prior
 #'
-#' @return
-#' @export
+#' @return A list with the elements
+#' \item{posterior_c_mean}{A n x r score matrix for the SLIDE model.}
+#' \item{posterior_t_mean}{A p x r loading matrix for the SLIDE model
+#' with sparsity pattern according to S.}
+#' \item{posterior_c_var}{Tolerance value at convergence.}
+#' \item{posterior_t_var}{}
 #'
+#' @export
 #' @examples
+#' set.seed(100)
+#' xc = seq(0, 1, length.out = 100)
+#' xt = seq(1, 2, length.out = 100)
+#' yc = 1 * xc + rnorm(100, 0, 0.25)
+#' yt = 2 + 1*xt + rnorm(100, 0, 0.25)
+#' gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1.2, choice = 1, l = 0.7)
 gp_posterior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha = NULL, degree = NULL) {
   # mean function at b
   # store Kb_xc, Kb_xt as vectors
@@ -113,6 +136,9 @@ gp_posterior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha 
   var_t = rep(NA, length(Xt))
   ##########################
   # y - mean of x for both control and treatment groups
+  # get means for Xt and Xc
+  meansb_c = mean_function(Xc, Yc, degree)
+  meansb_t = mean_function(Xt, Yt, degree)
   diff_t = Yt - mean_function(Xt, Yt, degree)
   diff_c = Yc - mean_function(Xc, Yc, degree)
   # two choices for cov kernel
@@ -124,12 +150,12 @@ gp_posterior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha 
     kernel_t = solve(Kt + var(c(Yc, Yt)) * diag(length(Yt)))
     # looping around all the control groups
     for(i in 1:length(Xc)){
-      post_mean_c[i] <- t(squared_exponential_covfunction(Xc, sigma_hat, l, Xc[i])) %*% kernel_c %*% diff_c
+      post_mean_c[i] <- meansb_c[i] + t(squared_exponential_covfunction(Xc, sigma_hat, l, Xc[i])) %*% kernel_c %*% diff_c
       var_c[i] <- t(squared_exponential_covfunction(Xt, sigma_hat, l, Xc[i])) %*% kernel_c %*% squared_exponential_covfunction(Xt, sigma_hat, l, Xc[i])
     }
     # looping around all the treatment groups
     for(i in 1:length(Xt)){
-      post_mean_t[i] <- t(squared_exponential_covfunction(Xt, sigma_hat, l, Xt[i])) %*% kernel_t %*% diff_t
+      post_mean_t[i] <- meansb_t[i] + t(squared_exponential_covfunction(Xt, sigma_hat, l, Xt[i])) %*% kernel_t %*% diff_t
       var_t[i] <- t(squared_exponential_covfunction(Xt, sigma_hat, l, Xt[i])) %*% kernel_t %*% squared_exponential_covfunction(Xt, sigma_hat, l, Xt[i])
       }
   }
@@ -140,13 +166,13 @@ gp_posterior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha 
     kernel_t = solve(Kt + var(c(Yc, Yt)) * diag(length(Yt)))
     # looping around all the control groups
     for(i in 1:length(Xc)){
-      post_mean_c[i] <- t(rational_quad_kernel(Xc, alpha, l, sigma_hat, Xc[i])) %*% kernel_c %*% diff_c
+      post_mean_c[i] <- meansb_c[i] + t(rational_quad_kernel(Xc, alpha, l, sigma_hat, Xc[i])) %*% kernel_c %*% diff_c
       var_c[i] = t(rational_quad_kernel(Xc, alpha, l, sigma_hat, Xc[i])) %*% kernel_c %*% rational_quad_kernel(Xc, alpha, l, sigma_hat, Xc[i])
 
     }
     # looping around all the treatment groups
     for(i in 1:length(Xt)){
-      post_mean_t[i] <- t(rational_quad_kernel(Xt, alpha, l, sigma_hat, Xt[i])) %*% kernel_t %*% diff_t
+      post_mean_t[i] <- meansb_t[i] + t(rational_quad_kernel(Xt, alpha, l, sigma_hat, Xt[i])) %*% kernel_t %*% diff_t
       var_t[i] = t(rational_quad_kernel(Xt, alpha, l, sigma_hat, Xt[i])) %*% kernel_t %*% rational_quad_kernel(Xt, alpha, l, sigma_hat, Xt[i])
     }
   }
@@ -157,12 +183,26 @@ gp_posterior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha 
 
 ## creating the plot
 ## inherit parameters, add reference
-#' Title
+#' Creating RDD Plot
+#' @param X matrix input
+#' @param Y matrix input
+#' @param b discontinuity point
+#' @param col_num column of X that the user wants in order to do regression discontinuty design on
+#' @param sigma_gp scalar input--indicates the variance of the Gaussian Process model
 #' @inheritParams gp_prior
-#' @return
+#' @return RDD Plot as well as estimated treatment effect
 #'
 #' @export
 #' @examples
+#' set.seed(100)
+#' sc = seq(0, 1, length.out = 100)
+#' st = seq(1, 2, length.out = 100)
+#' yc = 1 * sc + rnorm(100, 0, 0.25)
+#' yt = 2 + 1*st + rnorm(100, 0, 0.25)
+#' x = c(sc, st)
+#' x = as.matrix(x)
+#' y = c(yc, yt)
+#' create_plot(X=x, Y=y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
 #' @references
 #' Branson et al. (2019) A nonparametric Bayesian methodology
 #' for regression discontinuity designs,
