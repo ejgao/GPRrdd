@@ -12,11 +12,10 @@
 #' @param degree scalar input, default is NULL if no argument given
 #'
 #' @return A list with the elements
-#' \item{mean_control}{A n x r score matrix for the SLIDE model.}
-#' \item{mean_treatment}{A p x r loading matrix for the SLIDE model
-#' with sparsity pattern according to S.}
-#' \item{cov_c}{Tolerance value at convergence.}
-#' \item{cov_t}{}
+#' \item{mean_control}{A nc length vector for the prior mean function for the control group}
+#' \item{mean_treatment}{A nt length vector for the prior mean function for the treatment group}
+#' \item{cov_c}{An nc by nc matrix for the prior covariance kernel for control group }
+#' \item{cov_t}{An nt by nt matrix for the prior covariance kernel for treatment group}
 #' @export
 #'
 #' @examples
@@ -113,11 +112,10 @@ rational_quad_kernel <- function(X, alpha, l, sigma_hat, b = NULL) {
 #' @inheritParams gp_prior
 #'
 #' @return A list with the elements
-#' \item{posterior_c_mean}{A n x r score matrix for the SLIDE model.}
-#' \item{posterior_t_mean}{A p x r loading matrix for the SLIDE model
-#' with sparsity pattern according to S.}
-#' \item{posterior_c_var}{Tolerance value at convergence.}
-#' \item{posterior_t_var}{}
+#' \item{posterior_c_mean}{A nc length vector for the posterior mean function for the control group}
+#' \item{posterior_t_mean}{A nt length vector for the posterior mean function for the treatment group}
+#' \item{posterior_c_var}{An nc by nc matrix for the posterior covariance kernel for control group}
+#' \item{posterior_t_var}{An nc by nc matrix for the posterior covariance kernel for treatment group}
 #'
 #' @export
 #' @examples
