@@ -54,3 +54,10 @@ some work. Furthermore, I also need to document some of my functions and
 also polish up all my functions. I know the functions that are complete
 work; however, I am not sure they work properly so I will be checking on
 that.
+
+## References
+
+Branson et al., 2019\] Branson, Z., Rischard, M., Bornn, L., & Miratrix,
+W, L (2019). A nonparametric Bayesian methodology for regression
+discontinuity designs. Journal of Statistical Planning and Inference,
+202, 14-30. <https://doi.org/10.1016%2Fj.jspi.2019.01.003>

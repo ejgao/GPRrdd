@@ -33,11 +33,15 @@ devtools::install_github("ejgao/GPRrdd")
 devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
 ```
 Upon installing, please run 
+
 ```r
 library(GPRrdd)
 ```
+
 in order to gain access to the three functions that are available: gp_prior, gp_posterior, and create_plot.
 
 ## What is Left
 The actual coding portion of the package is nearly complete and I plan on finishing up create_plot and gp_posterior. I then plan on creating a vignette with examples. Regarding the functions for the package, they are almost all done. The functions gp_posterior and create_plot need some work. Furthermore, I also need to document some of my functions and also polish up all my functions. I know the functions that are complete work; however, I am not sure they work properly so I will be checking on that.
 
+## References
+Branson et al., 2019] Branson, Z., Rischard, M., Bornn, L., & Miratrix, W, L (2019). A nonparametric Bayesian methodology for regression discontinuity designs. Journal of Statistical Planning and Inference, 202, 14-30. https://doi.org/10.1016%2Fj.jspi.2019.01.003
