@@ -31,18 +31,43 @@ You can install the development version of GPRdd from
 ``` r
 # install without vignette
 devtools::install_github("ejgao/GPRrdd")
+#> Skipping install of 'GPRdd' from a github remote, the SHA1 (f6e6d5d8) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 # install with vignette
 devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
+#> Skipping install of 'GPRdd' from a github remote, the SHA1 (f6e6d5d8) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 ```
 
 Upon installing, please run
 
 ``` r
-library(GPRrdd)
+library(GPRdd)
 ```
 
 in order to gain access to the three functions that are available:
 gp_prior, gp_posterior, and create_plot.
+
+## Small Example
+
+Although all three functions are available, the main function is
+create_plot. A short example is illustrated below:
+
+``` r
+set.seed(100)
+sc = seq(0, 1, length.out = 100)
+st = seq(1, 2, length.out = 100)
+yc = 1 * sc + rnorm(100, 0, 0.25)
+yt = 2 + 1*st + rnorm(100, 0, 0.25)
+x = c(sc, st)
+x = as.matrix(x)
+y = c(yc, yt)
+create_plot(X=x, Y=y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
+```
+
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+    #> [1] 1.93442
 
 ## What is Left
 

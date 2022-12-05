@@ -26,7 +26,7 @@ In a regression discontinuity design (RDD), we have a discontinuity point at a p
 
 You can install the development version of GPRdd from [GitHub](https://github.com/) with:
 
-``` r
+```{r}
 # install without vignette
 devtools::install_github("ejgao/GPRrdd")
 # install with vignette
@@ -34,11 +34,27 @@ devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
 ```
 Upon installing, please run 
 
-```r
-library(GPRrdd)
+```{r}
+library(GPRdd)
 ```
 
 in order to gain access to the three functions that are available: gp_prior, gp_posterior, and create_plot.
+
+## Small Example
+Although all three functions are available, the main function is create_plot. A short example is illustrated below:
+
+```{r}
+set.seed(100)
+sc = seq(0, 1, length.out = 100)
+st = seq(1, 2, length.out = 100)
+yc = 1 * sc + rnorm(100, 0, 0.25)
+yt = 2 + 1*st + rnorm(100, 0, 0.25)
+x = c(sc, st)
+x = as.matrix(x)
+y = c(yc, yt)
+create_plot(X=x, Y=y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
+```
+
 
 ## What is Left
 The actual coding portion of the package is nearly complete and I plan on finishing up create_plot and gp_posterior. I then plan on creating a vignette with examples. Regarding the functions for the package, they are almost all done. The functions gp_posterior and create_plot need some work. Furthermore, I also need to document some of my functions and also polish up all my functions. I know the functions that are complete work; however, I am not sure they work properly so I will be checking on that.
