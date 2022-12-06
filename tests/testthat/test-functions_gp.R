@@ -10,11 +10,13 @@ y <- c(yc, yt)
 
 test_that("dimensions in each element of gp_prior are correct", {
   expect_equal(length(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$mean_control), length(xc))
+  expect_equal(length(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1, degree = 1)$mean_control), length(xc))
   expect_equal(length(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$mean_treatment), length(xt))
   expect_equal(dim(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$cov_c)[1], length(xc))
   expect_equal(dim(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$cov_c)[2], length(xc))
   expect_equal(dim(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$cov_t)[1], length(xt))
   expect_equal(dim(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$cov_t)[2], length(xt))
+
 })
 
 test_that("dimensions in each element of gp_posterior are correct", {
@@ -24,9 +26,16 @@ test_that("dimensions in each element of gp_posterior are correct", {
   expect_equal(length(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$posterior_t_var), length(xc))
 })
 
-test_that("output reteurn type is correct",  {
+test_that("length of output for create_plot", {
+  expect_equal(length(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)), 1)
+})
+
+test_that("output return type is correct",  {
   expect_equal(class(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)), "list")
   expect_equal(class(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)), "list")
   expect_equal(class(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)), "numeric")
-
 })
+
+
+
+
