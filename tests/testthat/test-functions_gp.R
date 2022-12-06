@@ -32,6 +32,8 @@ test_that("length of output for create_plot", {
 
 test_that("output return type is correct",  {
   expect_equal(class(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)), "list")
+  expect_equal(class(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$cov_c)[1], "matrix")
+  expect_equal(class(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$cov_t)[1], "matrix")
   expect_equal(class(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)), "list")
   expect_equal(class(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)), "numeric")
 })
