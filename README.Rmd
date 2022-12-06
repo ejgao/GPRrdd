@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # GPRdd
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/ejgao/GPRrdd/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ejgao/GPRrdd?branch=master)
 <!-- badges: end -->
 
 ## Intended Use
@@ -41,7 +42,7 @@ library(GPRdd)
 in order to gain access to the three functions that are available: gp_prior, gp_posterior, and create_plot.
 
 ## Small Example
-Although all three functions are available, the main function is create_plot. A short example is illustrated below:
+Although all three functions are available, the main function is create_plot. A short example is illustrated below, which displays the plot as well as estimated treatment effect.
 
 ```{r}
 set.seed(100)

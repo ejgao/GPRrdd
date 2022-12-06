@@ -4,6 +4,9 @@
 # GPRdd
 
 <!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/ejgao/GPRrdd/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ejgao/GPRrdd?branch=master)
 <!-- badges: end -->
 
 ## Intended Use
@@ -31,11 +34,20 @@ You can install the development version of GPRdd from
 ``` r
 # install without vignette
 devtools::install_github("ejgao/GPRrdd")
-#> Skipping install of 'GPRdd' from a github remote, the SHA1 (f6e6d5d8) has not changed since last install.
-#>   Use `force = TRUE` to force installation
+#> Downloading GitHub repo ejgao/GPRrdd@HEAD
+#>          checking for file 'C:\Users\ericg\AppData\Local\Temp\RtmpSs2A6t\remotes89d037d87521\ejgao-GPRrdd-f05bb3d/DESCRIPTION' ...     checking for file 'C:\Users\ericg\AppData\Local\Temp\RtmpSs2A6t\remotes89d037d87521\ejgao-GPRrdd-f05bb3d/DESCRIPTION' ...   ✔  checking for file 'C:\Users\ericg\AppData\Local\Temp\RtmpSs2A6t\remotes89d037d87521\ejgao-GPRrdd-f05bb3d/DESCRIPTION'
+#>       ─  preparing 'GPRdd':
+#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
+#>       ─  checking for LF line-endings in source and make files and shell scripts
+#>   ─  checking for empty or unneeded directories
+#>   ─  building 'GPRdd_2.0.1.9000.tar.gz'
+#>      
+#> 
+#> Installing package into 'C:/Users/ericg/AppData/Local/R/win-library/4.2'
+#> (as 'lib' is unspecified)
 # install with vignette
 devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
-#> Skipping install of 'GPRdd' from a github remote, the SHA1 (f6e6d5d8) has not changed since last install.
+#> Skipping install of 'GPRdd' from a github remote, the SHA1 (f05bb3da) has not changed since last install.
 #>   Use `force = TRUE` to force installation
 ```
 
@@ -51,7 +63,8 @@ gp_prior, gp_posterior, and create_plot.
 ## Small Example
 
 Although all three functions are available, the main function is
-create_plot. A short example is illustrated below:
+create_plot. A short example is illustrated below, which displays the
+plot as well as estimated treatment effect.
 
 ``` r
 set.seed(100)
