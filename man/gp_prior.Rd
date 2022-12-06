@@ -47,10 +47,10 @@ GP Priors
 }
 \examples{
 set.seed(100)
-xc = seq(0, 1, length.out = 100)
-xt = seq(1, 2, length.out = 100)
-yc = 1 * xc + rnorm(100, 0, 0.25)
-yt = 2 + 1*xt + rnorm(100, 0, 0.25)
+xc <- seq(0, 1, length.out = 100)
+xt <- seq(1, 2, length.out = 100)
+yc <- 1 * xc + rnorm(100, 0, 0.25)
+yt <- 2 + 1 * xt + rnorm(100, 0, 0.25)
 gp_prior(xc, xt, yc, yt, sigma_hat = 1.2, choice = 1, l = 0.7)
 gp_prior(xc, xt, yc, yt, sigma_hat = 1.2, choice = 2, l = 0.8, alpha = 2)
 }

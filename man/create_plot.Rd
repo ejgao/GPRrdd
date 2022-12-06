@@ -46,14 +46,14 @@ Creating RDD Plot
 }
 \examples{
 set.seed(100)
-sc = seq(0, 1, length.out = 100)
-st = seq(1, 2, length.out = 100)
-yc = 1 * sc + rnorm(100, 0, 0.25)
-yt = 2 + 1*st + rnorm(100, 0, 0.25)
-x = c(sc, st)
-x = as.matrix(x)
-y = c(yc, yt)
-create_plot(X=x, Y=y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
+sc <- seq(0, 1, length.out = 100)
+st <- seq(1, 2, length.out = 100)
+yc <- 1 * sc + rnorm(100, 0, 0.25)
+yt <- 2 + 1 * st + rnorm(100, 0, 0.25)
+x <- c(sc, st)
+x <- as.matrix(x)
+y <- c(yc, yt)
+create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
 }
 \references{
 Branson et al. (2019) A nonparametric Bayesian methodology

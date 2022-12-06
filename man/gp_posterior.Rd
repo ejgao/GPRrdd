@@ -47,9 +47,9 @@ Title GP Posterior
 }
 \examples{
 set.seed(100)
-xc = seq(0, 1, length.out = 100)
-xt = seq(1, 2, length.out = 100)
-yc = 1 * xc + rnorm(100, 0, 0.25)
-yt = 2 + 1*xt + rnorm(100, 0, 0.25)
+xc <- seq(0, 1, length.out = 100)
+xt <- seq(1, 2, length.out = 100)
+yc <- 1 * xc + rnorm(100, 0, 0.25)
+yt <- 2 + 1 * xt + rnorm(100, 0, 0.25)
 gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1.2, choice = 1, l = 0.7)
 }
