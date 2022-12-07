@@ -263,11 +263,11 @@ create_plot <- function(X, Y, b, col_num, sigma_gp, sigma_hat, choice = 1, l = N
   lines(Xt, post_mean_t, col = "blue")
   # plot 95% confidence bands
   # confidence bands for control groups
-  lower_c <- post_mean_c - (qt(0.95, length(Xc) - 1) * posterior_var_c) / (sqrt(length(Xc)))
-  upper_c <- post_mean_c + (qt(0.95, length(Xc) - 1) * posterior_var_c) / sqrt(length(Xc))
+  lower_c <- post_mean_c - (qt(0.95, length(Xc) - 1) * sqrt(posterior_var_c)) / (sqrt(length(Xc)))
+  upper_c <- post_mean_c + (qt(0.95, length(Xc) - 1) * sqrt(posterior_var_c)) / sqrt(length(Xc))
   # confidence bands for treatment groups
-  lower_t <- post_mean_t - (qt(0.95, length(Xt) - 1) * posterior_var_t) / sqrt(length(Xt))
-  upper_t <- post_mean_t + (qt(0.95, length(Xt) - 1) * posterior_var_t) / sqrt(length(Xt))
+  lower_t <- post_mean_t - (qt(0.95, length(Xt) - 1) * sqrt(posterior_var_t)) / sqrt(length(Xt))
+  upper_t <- post_mean_t + (qt(0.95, length(Xt) - 1) * sqrt(posterior_var_t)) / sqrt(length(Xt))
   # graphing bounds for Xc
   lines(Xc, lower_c, col = "red", lty = 5)
   lines(Xc, upper_c, col = "red", lty = 5)
@@ -275,10 +275,12 @@ create_plot <- function(X, Y, b, col_num, sigma_gp, sigma_hat, choice = 1, l = N
   lines(Xt, lower_t, col = "blue", lty = 5)
   lines(Xt, upper_t, col = "blue", lty = 5)
   # add a legend to differentiate between every line
-  # legend("topright",inset = c(-.2, 0.2), legend = c("Fit", "95% CI", "Fit", "95% CI"), col = c("red", "red", "blue", "blue"),
-  #        lty = c(1,5,1,5))
   # find treatment effect(scalar)
   post_treatment_effect <- post_mean_t[1] - post_mean_c[length(Xc)]
+  # Calculate the 95% CI around post_treatment effect
+  ci_effect_upper <- post_treatment_effect + 1.96 * sqrt((posterior_var_t[1] + posterior_var_c[length(Xc)]))
+  ci_effect_lower <- post_treatment_effect - 1.96 * sqrt((posterior_var_t[1] + posterior_var_c[length(Xc)]))
+  ci = c(ci_effect_lower, ci_effect_upper)
   # return treatment effect(scalar)
-  return(post_treatment_effect)
+  return(list(post_treatment_effect = post_treatment_effect, ci = ci))
 }
