@@ -17,7 +17,8 @@ knitr::opts_chunk$set(
 
 
 ##### Introduction #####
-The idea of a regression discontinuity is the measurement of the treatment effect. 
+The idea of a regression discontinuity is the measurement of the treatment effect at the boundary. In other words, we have a control (before the boundary/discontinuity point) and a treatment (everything after that point). The main goal of the RDD is to estimate the treatment effect. Here, Gaussian process regression (GPR) is employed to find an initial prior on the mean response functions for both our control and treatment groups. After,inference is done to estimate the treatmenteffect. 
+
 GPRdd is a package that is adopted from the paper "A Nonparametric Bayesian Methodology for
 Regression Discontinuity Designs" [Branson et al., 2019]. The idea is to employ Gaussian process regression (GPR) to find an initial prior on the mean response functions for both our control and treatment groups. Afterwards, the treatment effect can be estimated. 
 
@@ -67,7 +68,7 @@ gp_posterior(sc, st, yc, yt, sigma_hat = 1, choice = 1, l = 0.3)
 
 
 ##### Create RDD Plot #####
-The last function within the library that is available to the user is the create_plot function. This function does three things: 
+The last function is the main function within the library that is available to the user is the create_plot function. This function does three things: 
 1) It graphs the discontinuity point, which is denoted as X = b, where b is provided by the user
 2) Furthermore, this function plots the original data, defined as y for response and x for explanatory.
 3) The posterior fits for both the control group and treatment group are plotted with their respective confidence intervals, and the treatment effect, defined as $\hat{\tau}$ =  $\hat{\mu_{t}}(b)$ − $\hat{\mu_{c}}(b)$. 

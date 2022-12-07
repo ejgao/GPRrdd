@@ -22,7 +22,7 @@ discontinuity point). However, it has been discovered that LLR can have
 poor inferential properties. This motivates the non-parametric approach
 used in this paper \[Branson et al., 2019\], which employs Gaussian
 process regression (GPR) to find an initial prior on the mean response
-functions for both our control and treatment groups. After, inference is
+functions for both our control and treatment groups. After,inference is
 done to estimate the treatment effect. This package will show how we can
 use Gaussian processes on RDDs.
 
@@ -34,21 +34,8 @@ You can install the development version of GPRdd from
 ``` r
 # install without vignette
 devtools::install_github("ejgao/GPRrdd")
-#> Downloading GitHub repo ejgao/GPRrdd@HEAD
-#>          checking for file 'C:\Users\ericg\AppData\Local\Temp\RtmpSs2A6t\remotes89d037d87521\ejgao-GPRrdd-f05bb3d/DESCRIPTION' ...     checking for file 'C:\Users\ericg\AppData\Local\Temp\RtmpSs2A6t\remotes89d037d87521\ejgao-GPRrdd-f05bb3d/DESCRIPTION' ...   ✔  checking for file 'C:\Users\ericg\AppData\Local\Temp\RtmpSs2A6t\remotes89d037d87521\ejgao-GPRrdd-f05bb3d/DESCRIPTION'
-#>       ─  preparing 'GPRdd':
-#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
-#>       ─  checking for LF line-endings in source and make files and shell scripts
-#>   ─  checking for empty or unneeded directories
-#>   ─  building 'GPRdd_2.0.1.9000.tar.gz'
-#>      
-#> 
-#> Installing package into 'C:/Users/ericg/AppData/Local/R/win-library/4.2'
-#> (as 'lib' is unspecified)
 # install with vignette
 devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
-#> Skipping install of 'GPRdd' from a github remote, the SHA1 (f05bb3da) has not changed since last install.
-#>   Use `force = TRUE` to force installation
 ```
 
 Upon installing, please run
@@ -62,36 +49,49 @@ gp_prior, gp_posterior, and create_plot.
 
 ## Small Example
 
-Although all three functions are available, the main function is
-create_plot. A short example is illustrated below, which displays the
-plot as well as estimated treatment effect.
+Now, an example of create_plot will be shown. Since gp_prior and
+gp_posterior have long outputs, their usage be shown; however, the
+output will not be displayed. More information can be found in the
+vignette, however.
 
 ``` r
 set.seed(100)
-sc = seq(0, 1, length.out = 100)
-st = seq(1, 2, length.out = 100)
-yc = 1 * sc + rnorm(100, 0, 0.25)
-yt = 2 + 1*st + rnorm(100, 0, 0.25)
+sc = seq(0, 1, length.out = 50)
+st = seq(1, 2, length.out = 50)
+yc = 1 * sc + rnorm(50, 0, 0.25)
+yt = 2 + 1*st + rnorm(50, 0, 0.25)
 x = c(sc, st)
 x = as.matrix(x)
 y = c(yc, yt)
+```
+
+Then, to use gp_prior, we can do:
+
+``` r
+gp_prior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7))
+```
+
+Similarly, to use gp_posterior, we can do:
+
+``` r
+gp_posterior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7))
+```
+
+Finally, we can use create_plot to return the model fit on both the
+control and treatment groups, the estimated treatment effects, as well
+as the confidence interval around the estimated treatment effects.
+
+``` r
 create_plot(X=x, Y=y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
-    #> [1] 1.93442
-
-## What is Left
-
-The actual coding portion of the package is nearly complete and I plan
-on finishing up create_plot and gp_posterior. I then plan on creating a
-vignette with examples. Regarding the functions for the package, they
-are almost all done. The functions gp_posterior and create_plot need
-some work. Furthermore, I also need to document some of my functions and
-also polish up all my functions. I know the functions that are complete
-work; however, I am not sure they work properly so I will be checking on
-that.
+    #> $post_treatment_effect
+    #> [1] 1.886551
+    #> 
+    #> $ci
+    #> [1] -0.7697033  4.5428051
 
 ## References
 
