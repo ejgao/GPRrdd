@@ -25,6 +25,8 @@ test_that("dimensions in each element of gp_posterior are correct", {
   expect_equal(length(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$posterior_t_mean), length(xt))
   expect_equal(length(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$posterior_c_var), length(xc))
   expect_equal(length(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)$posterior_t_var), length(xc))
+  expect_equal(length(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 2, l = 1, alpha = 1)$posterior_t_var), length(xc))
+  expect_equal(length(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 2, l = 2, alpha = 1.3)$posterior_t_var), length(xc))
 })
 
 
