@@ -41,7 +41,6 @@ test_that("output return type is correct",  {
   expect_equal(class(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1, choice = 1, l = 1)), "list")
   expect_equal(class(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7)), "list")
   expect_equal(class(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0.7))[1], "list")
-
 })
 
 
@@ -50,5 +49,8 @@ test_that("expected errors", {
   expect_error(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 3, l = 1, alpha = 1), "Choice should be either 1 or 2")
   expect_error(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 1, l = 0, alpha = 0.4), "Lengthscale should be positive")
   expect_error(create_plot(X = x, Y = y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice = 2, l = 0, alpha = 1), "Lengthscale should be positive")
+  expect_error(gp_posterior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1.2, choice = 3, l = 0, alpha = 1), "Choice should be either 1 or 2")
+  expect_error(gp_prior(Xc = xc, Xt = xt, Yc = yc, Yt = yt, sigma_hat = 1.2, choice = 3, l = 0, alpha = 1), "Choice should be either 1 or 2")
+
 })
 
