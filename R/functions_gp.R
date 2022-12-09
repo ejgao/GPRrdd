@@ -1,15 +1,17 @@
 
 #' GP Priors
-#'
+#' @description The gp_prior function takes in a control and treatment group in the explanatory variable x and also the
+#' control and a treatment group in the response variable y in order to output the prior mean function and prior covariance kernel
+#' for both control and treatment groups. The user is given the choice for the desired kernel.
 #' @param Xc vector input for the control group
 #' @param Xt vector input for the test group
 #' @param Yc vector input for the response of the control group
 #' @param Yt vector input for the response of the test group
 #' @param sigma_hat scalar input for covariance kernels
-#' @param choice scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel
-#' @param l scalar input for covariance kernel
+#' @param choice scalar input 1 or 2, default is 1, which is the squared exponential covariance kernel. 2 indicates rational quadratic kernel
+#' @param l scalar input for covariance kernel(the lengthscale)
 #' @param alpha scalar input for rational quadratic kernel
-#' @param degree scalar input, default is NULL if no argument given
+#' @param degree scalar input indicating the maximum power of X in the polynomial for regression, default is NULL if no argument given
 #'
 #' @return A list with the elements
 #' \item{mean_control}{A nc length vector for the prior mean function for the control group}
@@ -120,9 +122,11 @@ rational_quad_kernel <- function(X, alpha, l, sigma_hat, b = NULL) {
 
 
 # gp_posterior
-#' Title GP Posterior
+#' GP Posterior
+#' @description The gp_posterior function is similar to gp_prior. It takes in a control and treatment group in the explanatory variable x and also the
+#' control and a treatment group in the response variable y in order to output the posterior mean function and posterior covariance kernel for both
+#' control and treatment groups. Once again, user is given control of desired kerne.
 #' @inheritParams gp_prior
-#'
 #' @return A list with the elements
 #' \item{posterior_c_mean}{A nc length vector for the posterior mean function for the control group}
 #' \item{posterior_t_mean}{A nt length vector for the posterior mean function for the treatment group}
@@ -197,10 +201,12 @@ gp_posterior <- function(Xc, Xt, Yc, Yt, sigma_hat, choice = 1, l = NULL, alpha 
 ## creating the plot
 ## inherit parameters, add reference
 #' Creating RDD Plot
+#' @description This creates the plot showing the model fits for both the control and treatment groups, and also
+#' returns also the estimated treatment effect and the confidence interval around it.
 #' @param X matrix input
 #' @param Y matrix input
-#' @param b discontinuity point
-#' @param col_num column of X that the user wants in order to do regression discontinuty design on
+#' @param b discontinuity point, should be inputted as a scalar.
+#' @param col_num column of X that the user is interested in.
 #' @param sigma_gp scalar input--indicates the variance of the Gaussian Process model
 #' @inheritParams gp_prior
 #' @return RDD Plot as well as estimated treatment effect
@@ -258,7 +264,7 @@ create_plot <- function(X, Y, b, col_num, sigma_gp, sigma_hat, choice = 1, l = N
   plot(c(Xc, Xt), c(Yc, Yt), main = "RDD Plot", xlab = "x", ylab = "y")
   # graph discontinuity point by using vertical line through that point
   abline(v = b)
-  # graph the fit
+  # graph them fit
   lines(Xc, post_mean_c, col = "red")
   lines(Xt, post_mean_t, col = "blue")
   # plot 95% confidence bands

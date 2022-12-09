@@ -22,27 +22,28 @@ create_plot(
 
 \item{Y}{matrix input}
 
-\item{b}{discontinuity point}
+\item{b}{discontinuity point, should be inputted as a scalar.}
 
-\item{col_num}{column of X that the user wants in order to do regression discontinuty design on}
+\item{col_num}{column of X that the user is interested in.}
 
 \item{sigma_gp}{scalar input--indicates the variance of the Gaussian Process model}
 
 \item{sigma_hat}{scalar input for covariance kernels}
 
-\item{choice}{scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel}
+\item{choice}{scalar input 1 or 2, default is 1, which is the squared exponential covariance kernel. 2 indicates rational quadratic kernel}
 
-\item{l}{scalar input for covariance kernel}
+\item{l}{scalar input for covariance kernel(the lengthscale)}
 
 \item{alpha}{scalar input for rational quadratic kernel}
 
-\item{degree}{scalar input, default is NULL if no argument given}
+\item{degree}{scalar input indicating the maximum power of X in the polynomial for regression, default is NULL if no argument given}
 }
 \value{
 RDD Plot as well as estimated treatment effect
 }
 \description{
-Creating RDD Plot
+This creates the plot showing the model fits for both the control and treatment groups, and also
+returns also the estimated treatment effect and the confidence interval around it.
 }
 \examples{
 set.seed(100)

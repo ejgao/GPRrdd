@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_gp.R
 \name{gp_posterior}
 \alias{gp_posterior}
-\title{Title GP Posterior}
+\title{GP Posterior}
 \usage{
 gp_posterior(
   Xc,
@@ -27,13 +27,13 @@ gp_posterior(
 
 \item{sigma_hat}{scalar input for covariance kernels}
 
-\item{choice}{scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel}
+\item{choice}{scalar input 1 or 2, default is 1, which is the squared exponential covariance kernel. 2 indicates rational quadratic kernel}
 
-\item{l}{scalar input for covariance kernel}
+\item{l}{scalar input for covariance kernel(the lengthscale)}
 
 \item{alpha}{scalar input for rational quadratic kernel}
 
-\item{degree}{scalar input, default is NULL if no argument given}
+\item{degree}{scalar input indicating the maximum power of X in the polynomial for regression, default is NULL if no argument given}
 }
 \value{
 A list with the elements
@@ -43,7 +43,9 @@ A list with the elements
 \item{posterior_t_var}{An nc by nc matrix for the posterior covariance kernel for treatment group}
 }
 \description{
-Title GP Posterior
+The gp_posterior function is similar to gp_prior. It takes in a control and treatment group in the explanatory variable x and also the
+control and a treatment group in the response variable y in order to output the posterior mean function and posterior covariance kernel for both
+control and treatment groups. Once again, user is given control of desired kerne.
 }
 \examples{
 set.seed(100)

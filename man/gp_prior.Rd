@@ -27,13 +27,13 @@ gp_prior(
 
 \item{sigma_hat}{scalar input for covariance kernels}
 
-\item{choice}{scalar input 1 or 2, default is 1, which is the squared covariance kernel. 2 is rational quadratic kernel}
+\item{choice}{scalar input 1 or 2, default is 1, which is the squared exponential covariance kernel. 2 indicates rational quadratic kernel}
 
-\item{l}{scalar input for covariance kernel}
+\item{l}{scalar input for covariance kernel(the lengthscale)}
 
 \item{alpha}{scalar input for rational quadratic kernel}
 
-\item{degree}{scalar input, default is NULL if no argument given}
+\item{degree}{scalar input indicating the maximum power of X in the polynomial for regression, default is NULL if no argument given}
 }
 \value{
 A list with the elements
@@ -43,7 +43,9 @@ A list with the elements
 \item{cov_t}{An nt by nt matrix for the prior covariance kernel for treatment group}
 }
 \description{
-GP Priors
+The gp_prior function takes in a control and treatment group in the explanatory variable x and also the
+control and a treatment group in the response variable y in order to output the prior mean function and prior covariance kernel
+for both control and treatment groups. The user is given the choice for the desired kernel.
 }
 \examples{
 set.seed(100)
