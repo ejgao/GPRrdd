@@ -68,7 +68,7 @@ y = c(yc, yt)
 Then, to use gp_prior, we can do:
 
 ``` r
-gp_prior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7))
+gp_prior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7)
 ```
 
 Similarly, to use gp_posterior, we can do:
