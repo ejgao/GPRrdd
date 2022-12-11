@@ -144,5 +144,5 @@ Compared to the first graph, for our generated data, we have similar results for
 
 
 ##### References #####
-Branson et al., 2019] Branson, Z., Rischard, M., Bornn, L., & Miratrix, W, L (2019). A nonparametric Bayesian methodology for regression discontinuity designs. Journal of Statistical Planning and Inference, 202, 14-30. https://doi.org/10.1016%2Fj.jspi.2019.01.003
+Branson et al., 2019. A nonparametric Bayesian methodology for regression discontinuity designs. Journal of Statistical Planning and Inference, 202, 14-30. https://doi.org/10.1016%2Fj.jspi.2019.01.003
 

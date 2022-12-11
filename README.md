@@ -22,7 +22,7 @@ discontinuity point). However, it has been discovered that LLR can have
 poor inferential properties. This motivates the non-parametric approach
 used in this paper \[Branson et al., 2019\], which employs Gaussian
 process regression (GPR) to find an initial prior on the mean response
-functions for both our control and treatment groups. After,inference is
+functions for both our control and treatment groups. After, inference is
 done to estimate the treatment effect. This package will show how we can
 use Gaussian processes on RDDs.
 
@@ -95,7 +95,6 @@ create_plot(X=x, Y=y, b = 1, col_num = 1, sigma_gp = 2, sigma_hat = 1.2, choice 
 
 ## References
 
-Branson et al., 2019\] Branson, Z., Rischard, M., Bornn, L., & Miratrix,
-W, L (2019). A nonparametric Bayesian methodology for regression
-discontinuity designs. Journal of Statistical Planning and Inference,
-202, 14-30. <https://doi.org/10.1016%2Fj.jspi.2019.01.003>
+Branson et al.(2019). A nonparametric Bayesian methodology for
+regression discontinuity designs. Journal of Statistical Planning and
+Inference, 202, 14-30. <https://doi.org/10.1016%2Fj.jspi.2019.01.003>
