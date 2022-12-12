@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GPRdd
+# GPRrdd
 
 <!-- badges: start -->
 
@@ -41,7 +41,7 @@ devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
 Upon installing, please run
 
 ``` r
-library(GPRdd)
+library(GPRrdd)
 ```
 
 in order to gain access to the three functions that are available:
@@ -74,7 +74,7 @@ gp_prior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7)
 Similarly, to use gp_posterior, we can do:
 
 ``` r
-gp_posterior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7))
+gp_posterior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7)
 ```
 
 Finally, we can use create_plot to return the model fit on both the

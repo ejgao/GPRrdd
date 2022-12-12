@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(GPRdd)
+library(GPRrdd)
 
-test_check("GPRdd")
+test_check("GPRrdd")

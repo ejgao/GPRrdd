@@ -1,8 +1,8 @@
 ---
-title: "GPRdd Vignette"
+title: "GPRrdd Vignette"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{GPRdd Vignette}
+  %\VignetteIndexEntry{GPRrdd Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ##### Introduction #####
 The idea of a regression discontinuity is the measurement of the treatment effect at the boundary. In other words, we have a control (before the boundary/discontinuity point) and a treatment (everything after that point). The main goal of the RDD is to estimate the treatment effect. Here, Gaussian process regression (GPR) is employed to find an initial prior on the mean response functions for both our control and treatment groups. After,inference is done to estimate the treatmenteffect. 
 
-GPRdd is a package that is adopted from the paper "A Nonparametric Bayesian Methodology for
+GPRrdd is a package that is adopted from the paper "A Nonparametric Bayesian Methodology for
 Regression Discontinuity Designs" [Branson et al., 2019]. The idea is to employ Gaussian process regression (GPR) to find an initial prior on the mean response functions for both our control and treatment groups. Afterwards, the treatment effect can be estimated. 
 
 Ideally, this package is used when user knows that there is a discontinuity in the data. As a real life example, supposed we wanted to measure GDP before and after a certain government policy. In this case x would be time and y would be GDP. So, at the time the policy has occurred, there would be a discontinuity, since the GDP before and after would be different. So, we can utilize this package in order to measure the treatment effect. 
@@ -33,7 +33,7 @@ devtools::install_github("ejgao/GPRrdd")
 
 Next, upon installing, the following command will give user access to all three functions inside of GPRdd: gp_prior, gp_posterior, and create_plot.
 ```{r}
-library(GPRdd)
+library(GPRrdd)
 ```
 
 ### GP Prior ###

@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# GPRdd
+# GPRrdd
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/ejgao/GPRrdd/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ejgao/GPRrdd?branch=master)
@@ -36,7 +36,7 @@ devtools::install_github("ejgao/GPRrdd", build_vignettes = TRUE)
 Upon installing, please run 
 
 ```{r}
-library(GPRdd)
+library(GPRrdd)
 ```
 
 in order to gain access to the three functions that are available: gp_prior, gp_posterior, and create_plot.
@@ -63,7 +63,7 @@ gp_prior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7)
 
 Similarly, to use gp_posterior, we can do:
 ```{r, eval = F}
-gp_posterior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7))
+gp_posterior(Xc = sc, Xt = st, Yc = yc, Yt = yt, sigma_hat = 1.2, l = 0.7)
 ```
 
 

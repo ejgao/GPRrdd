@@ -280,7 +280,6 @@ create_plot <- function(X, Y, b, col_num, sigma_gp, sigma_hat, choice = 1, l = N
   # graphing bounds for Xt
   lines(Xt, lower_t, col = "blue", lty = 5)
   lines(Xt, upper_t, col = "blue", lty = 5)
-  # add a legend to differentiate between every line
   # find treatment effect(scalar)
   post_treatment_effect <- post_mean_t[1] - post_mean_c[length(Xc)]
   # Calculate the 95% CI around post_treatment effect
