@@ -1,6 +1,6 @@
 Package: GPRrdd
 Title: Gaussian Processes Regression on Regression Discontinuity Designs
-Version: 2.0.2.1000
+Version: 1.0.0
 Authors@R: 
     person("Eric", "Gao", , "eric2018@tamu.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
